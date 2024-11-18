@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare Static Tools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+        }
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+        }
+        .container {
+            padding: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function showTool(toolId) {
+            document.querySelectorAll('.tool').forEach(tool => {
+                tool.classList.add('hidden');
+            });
+            document.getElementById(toolId).classList.remove('hidden');
+        }
+        
+        function chainProxyEditor() {
+            const tag = document.getElementById('proxyTag').value;
+            const inputJson = document.getElementById('inputJson').value;
+            try {
+                let nodes = JSON.parse(inputJson);
+                nodes = nodes.map(node => {
+                    delete node['__id_in_gui'];
+                    node['detour'] = tag;
+                    return node;
+                });
+                document.getElementById('outputJson').value = JSON.stringify(nodes, null, 2);
+            } catch (e) {
+                alert('Invalid JSON input');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#" onclick="showTool('jsonEditor')">Chain Proxy Batch Editor</a>
+        <a href="#" onclick="showTool('subscriptionTool')">Subscription Tool</a>
+    </div>
+
+    <div class="container">
+        <div id="jsonEditor" class="tool">
+            <h2>Chain Proxy Batch Editor</h2>
+            <label for="proxyTag">Enter Proxy Tag:</label><br>
+            <input type="text" id="proxyTag"><br><br>
+            <label for="inputJson">Enter JSON Nodes:</label><br>
+            <textarea id="inputJson" rows="10" cols="50"></textarea><br><br>
+            <button onclick="chainProxyEditor()">Edit JSON</button><br><br>
+            <label for="outputJson">Edited JSON Output:</label><br>
+            <textarea id="outputJson" rows="10" cols="50" readonly></textarea>
+        </div>
+
+        <div id="subscriptionTool" class="tool hidden">
+            <h2>Subscription Tool</h2>
+            <p>Coming soon...</p>
+        </div>
+    </div>
+</body>
+</html>
